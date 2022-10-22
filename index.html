@@ -5,8 +5,62 @@
   <title>HTML5 Canvas</title>
 </head>
 <body>
+    <!--Canvas is similar to paint. You get a block of pixels to draw on. You're not drawing on the cavas element in html, we draw on the 'context'. This is 2d but 3d is used for video games and certain types of rendering.   -->
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
+    //querySelector returns the first element that matches a specified CSS selector(s) in the document.
+    //getContext returns an object that provides methods and properties for drawing on the canvas.
+const canvas = document.querySelector('#draw');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+ctx.strokeStyle = '#BADA55';
+ctx.lineJoin = 'round';
+ctx.lineCap = 'round';
+ctx.lineWidth = 100;
+// ctx.globalCompositeOperation = 'multiply';
+// for more on canvas see mdn docs
+
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+let hue = 0;
+let direction = true;
+
+
+
+function draw(e) {
+    if (!isDrawing) return; // stop the function from running when user isn't clicking on the mouse
+    console.log(e);
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+
+    hue ++;
+    if(hue  >= 360) {
+      hue = 0;
+    }
+if(ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+  direction = !direction;
+}
+if(direction) {
+  ctx.lineWidth++;
+} else {
+  ctx.lineWidth--;
+}
+}
+
+canvas.addEventListener('mousedown', (e) =>  {
+    isDrawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+});
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mouseout', () => isDrawing = false);
+
 </script>
 
 <style>
